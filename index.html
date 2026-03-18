@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Concept2Application AI Tool — v5</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy: #1E407C;
+    --navy-deep: #0F2044;
+    --navy-mid: #162F5C;
+    --white: #FFFFFF;
+    --off-white: #F4F6FA;
+    --light-blue: #96BEE6;
+    --light-blue-muted: #D6E6F5;
+    --gold: #BF8B2E;
+    --gold-light: #F5E6C4;
+    --slate: #4A5C7A;
+    --border: rgba(30, 64, 124, 0.15);
+    --text-body: #1A2535;
+    --red: #C0392B;
+    --green: #1E7C4A;
+    --amber-rate: #B8660A;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--off-white);
+    color: var(--text-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .top-stripe {
+    height: 5px;
+    background: linear-gradient(90deg, var(--navy-deep) 0%, var(--navy) 40%, var(--light-blue) 100%);
+  }
+
+  .navbar {
+    background: var(--navy-deep);
+    padding: 0 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    animation: fadeDown 0.5s ease both;
+  }
+
+  .nav-wordmark {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 2px;
+    color: var(--white);
+    opacity: 0.9;
+  }
+
+  .nav-wordmark span { color: var(--light-blue); }
+
+  .nav-tag {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--light-blue);
+    opacity: 0.7;
+  }
+
+  .hero {
+    background: var(--navy-deep);
+    padding: 64px 48px 72px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeIn 0.6s ease both;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(150,190,230,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(150,190,230,0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    right: -120px; top: -120px;
+    width: 480px; height: 480px;
+    border-radius: 50%;
+    border: 2px solid rgba(150,190,230,0.08);
+    box-shadow: 0 0 0 60px rgba(150,190,230,0.04), 0 0 0 120px rgba(150,190,230,0.02);
+    pointer-events: none;
+  }
+
+  .hero-inner {
+    max-width: 780px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-eyebrow {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--light-blue);
+    border: 1px solid rgba(150,190,230,0.3);
+    padding: 4px 12px;
+    border-radius: 3px;
+    margin-bottom: 20px;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(42px, 6vw, 72px);
+    line-height: 0.95;
+    letter-spacing: 2px;
+    color: var(--white);
+    margin-bottom: 10px;
+  }
+
+  .hero-title .accent { color: var(--light-blue); }
+
+  .hero-sub {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 17px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 14px;
+    max-width: 480px;
+    line-height: 1.6;
+  }
+
+  /* ── Main ── */
+  .main {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 48px 24px 64px;
+    flex: 1;
+    width: 100%;
+  }
+
+  /* ── Search panel ── */
+  .search-panel {
+    background: var(--white);
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--navy);
+    padding: 32px 36px;
+    box-shadow: 0 2px 24px rgba(15, 32, 68, 0.08);
+    margin-bottom: 32px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .panel-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin-bottom: 14px;
+  }
+
+  .input-row {
+    display: flex;
+    gap: 10px;
+  }
+
+  .concept-input {
+    flex: 1;
+    padding: 14px 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    border: 1.5px solid var(--border);
+    border-radius: 3px;
+    background: var(--off-white);
+    color: var(--text-body);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .concept-input:focus {
+    border-color: var(--navy);
+    box-shadow: 0 0 0 3px rgba(30, 64, 124, 0.1);
+    background: var(--white);
+  }
+
+  .concept-input::placeholder { color: rgba(74,92,122,0.45); }
+
+  .submit-btn {
+    padding: 14px 28px;
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    border-radius: 3px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    white-space: nowrap;
+  }
+
+  .submit-btn:hover {
+    background: var(--navy-mid);
+    box-shadow: 0 4px 16px rgba(15, 32, 68, 0.25);
+    transform: translateY(-1px);
+  }
+
+  .submit-btn:active { transform: translateY(0); }
+  .submit-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  .panel-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 24px 0 20px;
+  }
+
+  /* ── Theme section ── */
+  .theme-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--slate);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .theme-label .optional {
+    font-weight: 400;
+    opacity: 0.5;
+    letter-spacing: 0.5px;
+    text-transform: none;
+    font-size: 11px;
+  }
+
+  .theme-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .theme-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 16px;
+    background: var(--off-white);
+    border: 1.5px solid var(--border);
+    border-radius: 3px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--slate);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+
+  .theme-btn:hover {
+    border-color: var(--navy);
+    color: var(--navy);
+    background: var(--white);
+  }
+
+  .theme-btn.active {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: var(--white);
+    box-shadow: 0 2px 10px rgba(15, 32, 68, 0.2);
+  }
+
+  .theme-btn .theme-icon { font-size: 15px; line-height: 1; }
+
+  .theme-btn.ai-choice { border-style: dashed; border-color: rgba(30,64,124,0.3); }
+  .theme-btn.ai-choice.active { background: var(--slate); border-color: var(--slate); border-style: solid; color: var(--white); }
+
+  /* ── Custom theme row ── */
+  .custom-theme-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+    align-items: center;
+  }
+
+  .custom-theme-input {
+    flex: 1;
+    padding: 9px 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    border: 1.5px dashed rgba(30,64,124,0.3);
+    border-radius: 3px;
+    background: var(--off-white);
+    color: var(--text-body);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  }
+
+  .custom-theme-input:focus {
+    border-color: var(--navy);
+    border-style: solid;
+    box-shadow: 0 0 0 3px rgba(30, 64, 124, 0.08);
+    background: var(--white);
+  }
+
+  .custom-theme-input::placeholder { color: rgba(74,92,122,0.4); font-style: italic; }
+
+  .custom-theme-input.active-custom {
+    border-style: solid;
+    border-color: var(--navy);
+    background: var(--white);
+  }
+
+  .custom-apply-btn {
+    padding: 9px 16px;
+    background: transparent;
+    border: 1.5px solid var(--border);
+    border-radius: 3px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: var(--slate);
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+
+  .custom-apply-btn:hover {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: var(--white);
+  }
+
+  /* Concept chips */
+  .chips-row {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    align-items: center;
+  }
+
+  .chips-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--slate);
+    opacity: 0.7;
+  }
+
+  .chip {
+    padding: 4px 13px;
+    background: transparent;
+    border: 1px solid rgba(30,64,124,0.22);
+    border-radius: 2px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--navy);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .chip:hover { background: var(--navy); color: var(--white); }
+
+  /* ── Loading ── */
+  .loading-panel {
+    display: none;
+    background: var(--white);
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    padding: 48px 36px;
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+    margin-bottom: 32px;
+  }
+
+  .loading-panel.visible { display: block; }
+
+  .loader-bar-wrap {
+    width: 200px;
+    height: 3px;
+    background: var(--light-blue-muted);
+    border-radius: 2px;
+    margin: 0 auto 20px;
+    overflow: hidden;
+  }
+
+  .loader-bar {
+    height: 100%;
+    background: var(--navy);
+    border-radius: 2px;
+    animation: loadBar 1.4s ease-in-out infinite;
+  }
+
+  .loading-text {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--slate);
+  }
+
+  .loading-dots::after {
+    content: '';
+    animation: dots 1.5s steps(3, end) infinite;
+  }
+
+  /* ── Error cards ── */
+  .error-card, .theme-error-card {
+    display: none;
+    background: var(--white);
+    border: 1px solid rgba(192,57,43,0.25);
+    border-left: 3px solid var(--red);
+    border-radius: 4px;
+    padding: 16px 20px;
+    font-size: 14px;
+    color: #7B241C;
+    animation: fadeIn 0.3s ease;
+    line-height: 1.55;
+  }
+
+  .error-card.visible { display: block; margin-bottom: 32px; }
+
+  .theme-error-card {
+    margin-top: 10px;
+    background: #FDF3F2;
+  }
+
+  .theme-error-card.visible { display: block; }
+
+  .error-title {
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    color: var(--red);
+  }
+
+  /* ── Result card ── */
+  .result-card {
+    display: none;
+    background: var(--white);
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: 0 4px 32px rgba(15, 32, 68, 0.1);
+    animation: revealCard 0.55s cubic-bezier(0.22,1,0.36,1) both;
+    margin-bottom: 32px;
+  }
+
+  .result-card.visible { display: block; }
+
+  /* ── Quality rating banner ── */
+  .quality-banner {
+    display: none;
+    padding: 11px 36px;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    gap: 12px;
+    animation: fadeIn 0.4s ease;
+  }
+
+  .quality-banner.visible { display: flex; }
+
+  .quality-label-text {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--slate);
+    opacity: 0.6;
+  }
+
+  .quality-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .quality-pill.bad {
+    background: #FDECEA;
+    color: var(--red);
+    border: 1px solid rgba(192,57,43,0.2);
+  }
+
+  .quality-pill.okay {
+    background: #FEF6EC;
+    color: var(--amber-rate);
+    border: 1px solid rgba(184,102,10,0.2);
+  }
+
+  .quality-pill.great {
+    background: #EAF6EF;
+    color: var(--green);
+    border: 1px solid rgba(30,124,74,0.2);
+  }
+
+  .quality-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .quality-pill.bad .quality-dot { background: var(--red); }
+  .quality-pill.okay .quality-dot { background: var(--amber-rate); }
+  .quality-pill.great .quality-dot { background: var(--green); }
+
+  .quality-note {
+    font-size: 12px;
+    color: var(--slate);
+    opacity: 0.6;
+    font-style: italic;
+    font-family: 'Source Serif 4', serif;
+  }
+
+  /* Result header */
+  .result-header {
+    background: linear-gradient(135deg, var(--navy-deep) 0%, var(--navy-mid) 100%);
+    padding: 28px 36px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .result-header::after {
+    content: '';
+    position: absolute;
+    right: 0; top: 0; bottom: 0;
+    width: 5px;
+    background: var(--light-blue);
+  }
+
+  .result-eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--light-blue);
+    opacity: 0.75;
+    margin-bottom: 4px;
+  }
+
+  .result-concept-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 1.5px;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .result-scenario-title {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 15px;
+    color: rgba(255,255,255,0.55);
+    margin-top: 6px;
+  }
+
+  .theme-badge {
+    display: none;
+    margin-top: 8px;
+    padding: 2px 10px;
+    border-radius: 2px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    background: rgba(150,190,230,0.2);
+    color: var(--light-blue);
+  }
+
+  .result-body { padding: 36px; }
+
+  .r-section {
+    margin-bottom: 28px;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .r-section:nth-child(1) { animation-delay: 0.05s; }
+  .r-section:nth-child(2) { animation-delay: 0.15s; }
+  .r-section:nth-child(3) { animation-delay: 0.25s; }
+  .r-section:nth-child(4) { animation-delay: 0.35s; }
+
+  .r-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .r-text {
+    font-family: 'Source Serif 4', serif;
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--text-body);
+  }
+
+  .story-block {
+    background: var(--off-white);
+    border-left: 3px solid var(--navy);
+    padding: 20px 24px;
+    border-radius: 0 4px 4px 0;
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--text-body);
+  }
+
+  .takeaway-block {
+    background: linear-gradient(135deg, var(--navy-deep) 0%, var(--navy-mid) 100%);
+    border-radius: 4px;
+    padding: 20px 24px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .takeaway-bar {
+    width: 3px;
+    background: var(--light-blue);
+    border-radius: 2px;
+    flex-shrink: 0;
+    align-self: stretch;
+    min-height: 20px;
+  }
+
+  .takeaway-text {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.88);
+  }
+
+  /* ── Homonym disambiguation card ── */
+  .homonym-card {
+    display: none;
+    background: var(--white);
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--gold);
+    padding: 28px 36px;
+    box-shadow: 0 2px 24px rgba(15, 32, 68, 0.08);
+    margin-bottom: 32px;
+    animation: revealCard 0.45s cubic-bezier(0.22,1,0.36,1) both;
+  }
+
+  .homonym-card.visible { display: block; }
+
+  .homonym-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .homonym-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 26px;
+    letter-spacing: 1px;
+    color: var(--navy-deep);
+    margin-bottom: 4px;
+  }
+
+  .homonym-subtitle {
+    font-family: 'Source Serif 4', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--slate);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+
+  .homonym-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .homonym-option-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 18px;
+    background: var(--off-white);
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s ease;
+    font-family: 'DM Sans', sans-serif;
+    width: 100%;
+  }
+
+  .homonym-option-btn:hover {
+    border-color: var(--navy);
+    background: var(--white);
+    box-shadow: 0 2px 12px rgba(15,32,68,0.08);
+    transform: translateX(3px);
+  }
+
+  .homonym-option-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--navy);
+    opacity: 0.4;
+    flex-shrink: 0;
+    line-height: 1.2;
+  }
+
+  .homonym-option-content {}
+
+  .homonym-option-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+  }
+
+  .homonym-option-desc {
+    font-size: 13px;
+    color: var(--slate);
+    line-height: 1.5;
+  }
+
+  /* ── Other definitions section (at bottom of result) ── */
+  .other-defs-section {
+    display: none;
+    border-top: 1px solid var(--border);
+    padding: 20px 36px 28px;
+    background: var(--off-white);
+  }
+
+  .other-defs-section.visible { display: block; }
+
+  .other-defs-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--slate);
+    opacity: 0.6;
+    margin-bottom: 10px;
+  }
+
+  .other-defs-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .other-def-btn {
+    padding: 7px 16px;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 3px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--navy);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .other-def-btn:hover {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: var(--white);
+  }
+  .site-footer {
+    background: var(--navy-deep);
+    border-top: 3px solid var(--navy);
+    padding: 28px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-left {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .footer-created {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+  }
+
+  .footer-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    color: var(--white);
+    opacity: 0.85;
+  }
+
+  .footer-year {
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--light-blue);
+    opacity: 0.5;
+  }
+
+  .footer-right {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 2px;
+    color: var(--light-blue);
+    opacity: 0.3;
+    text-align: right;
+  }
+
+  /* Animations */
+  @keyframes fadeDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes revealCard {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes loadBar {
+    0%   { width: 0%; margin-left: 0; }
+    50%  { width: 70%; margin-left: 15%; }
+    100% { width: 0%; margin-left: 100%; }
+  }
+  @keyframes dots {
+    0%   { content: ''; }
+    33%  { content: '.'; }
+    66%  { content: '..'; }
+    100% { content: '...'; }
+  }
+
+  @media (max-width: 600px) {
+    .navbar, .site-footer { padding: 0 20px; }
+    .site-footer { padding: 24px 20px; }
+    .hero { padding: 44px 24px 52px; }
+    .main { padding: 32px 16px 48px; }
+    .search-panel { padding: 24px 20px; }
+    .input-row { flex-direction: column; }
+    .result-body { padding: 24px 20px; }
+    .result-header { padding: 22px 24px; }
+    .hero-title { font-size: 38px; }
+    .quality-banner { padding: 10px 20px; flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-stripe"></div>
+
+<nav class="navbar">
+  <div class="nav-wordmark">Penn <span>State</span></div>
+  <div class="nav-tag">Academic Tools</div>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">AI-Powered Learning</div>
+    <h1 class="hero-title">Concept<span class="accent">2</span>Application<br>AI Tool</h1>
+    <p class="hero-sub">Type any concept you're struggling with and get a real-world example that makes it click.</p>
+  </div>
+</section>
+
+<main class="main">
+
+  <div class="search-panel">
+
+    <div class="panel-label">Enter a concept or topic</div>
+    <div class="input-row">
+      <input class="concept-input" id="conceptInput" type="text"
+        placeholder="e.g. net income, opportunity cost, supply and demand..."
+        autocomplete="off" />
+      <button class="submit-btn" id="searchBtn" onclick="explain()">Explain It</button>
+    </div>
+
+    <!-- Concept chips -->
+    <div class="chips-row">
+      <span class="chips-label">Try:</span>
+      <span class="chip" onclick="tryExample('compound interest')">Compound Interest</span>
+      <span class="chip" onclick="tryExample('supply and demand')">Supply & Demand</span>
+      <span class="chip" onclick="tryExample('opportunity cost')">Opportunity Cost</span>
+      <span class="chip" onclick="tryExample('inflation')">Inflation</span>
+      <span class="chip" onclick="tryExample('cognitive dissonance')">Cognitive Dissonance</span>
+      <span class="chip" onclick="tryExample('photosynthesis')">Photosynthesis</span>
+    </div>
+
+    <hr class="panel-divider">
+
+    <!-- Theme selector -->
+    <div class="theme-label">
+      Choose an Example Theme
+      <span class="optional">— optional</span>
+    </div>
+
+    <div class="theme-grid" id="themeGrid">
+      <button class="theme-btn ai-choice active" data-theme="" onclick="selectTheme(this)">
+        <span class="theme-icon">✦</span> AI Picks Best Fit
+      </button>
+      <button class="theme-btn" data-theme="lemonade stand" onclick="selectTheme(this)">
+        <span class="theme-icon">🍋</span> Lemonade Stand
+      </button>
+      <button class="theme-btn" data-theme="penn state" onclick="selectTheme(this)">
+        <span class="theme-icon">🦁</span> Penn State
+      </button>
+      <button class="theme-btn" data-theme="the human body" onclick="selectTheme(this)">
+        <span class="theme-icon">🫀</span> Human Body
+      </button>
+      <button class="theme-btn" data-theme="sports team" onclick="selectTheme(this)">
+        <span class="theme-icon">🏆</span> Sports Team
+      </button>
+      <button class="theme-btn" data-theme="social media" onclick="selectTheme(this)">
+        <span class="theme-icon">📱</span> Social Media
+      </button>
+      <button class="theme-btn" data-theme="cooking / restaurant" onclick="selectTheme(this)">
+        <span class="theme-icon">🍳</span> Cooking
+      </button>
+    </div>
+
+    <!-- Custom theme input -->
+    <div class="custom-theme-row">
+      <input
+        class="custom-theme-input"
+        id="customThemeInput"
+        type="text"
+        placeholder="Or type your own theme... e.g. a NASA mission, a video game"
+        autocomplete="off"
+      />
+      <button class="custom-apply-btn" onclick="applyCustomTheme()">Apply</button>
+    </div>
+
+    <!-- Theme error (shown inline if custom theme is bad) -->
+    <div class="theme-error-card" id="themeErrorCard">
+      <div class="error-title">Theme Not Usable</div>
+      <span id="themeErrorMsg"></span>
+    </div>
+
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-panel" id="loadingArea">
+    <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+    <div class="loading-text">Building your example<span class="loading-dots"></span></div>
+  </div>
+
+  <!-- General error -->
+  <div class="error-card" id="errorCard">
+    <div class="error-title">Something Went Wrong</div>
+    Please try again. If the problem persists, refresh the page.
+  </div>
+
+  <!-- Input rejection cards -->
+  <div class="error-card" id="inputErrorGibberish">
+    <div class="error-title">Unrecognized Input</div>
+    This seems like it may have been an accidental input. Please try rephrasing or spellchecking and try again.
+  </div>
+
+  <div class="error-card" id="inputErrorOffensive">
+    <div class="error-title">Inappropriate Input</div>
+    I can't help with requests that involve inappropriate or offensive inputs. Please try again with a different input.
+  </div>
+
+  <div class="error-card" id="inputErrorNiche">
+    <div class="error-title">Term Outside My Scope</div>
+    Unfortunately this is a term I cannot provide help with because of <span id="inputErrorNicheReason"></span>. In order to ensure I do not output any plausible-sounding but inaccurate information, I will need to refrain from answering. Please try again with another term.
+  </div>
+
+  <!-- Homonym disambiguation card -->
+  <div class="homonym-card" id="homonymCard">
+    <div class="homonym-eyebrow">Multiple Definitions Found</div>
+    <div class="homonym-title" id="homonymWord">—</div>
+    <div class="homonym-subtitle">This word has more than one meaning. Which definition would you like a real-world scenario for?</div>
+    <div class="homonym-options" id="homonymOptions"></div>
+  </div>
+
+  <!-- Result -->
+  <div class="result-card" id="resultCard">
+
+    <!-- Quality banner (only shown when a specific theme is chosen) -->
+    <div class="quality-banner" id="qualityBanner">
+      <span class="quality-label-text">Theme Quality</span>
+      <span class="quality-pill" id="qualityPill">
+        <span class="quality-dot"></span>
+        <span id="qualityWord"></span>
+      </span>
+      <span class="quality-note" id="qualityNote"></span>
+    </div>
+
+    <div class="result-header">
+      <div class="result-eyebrow">Concept Breakdown</div>
+      <div class="result-concept-name" id="resultConceptName">—</div>
+      <div class="result-scenario-title" id="resultScenarioTitle">—</div>
+      <div class="theme-badge" id="resultThemeBadge"></div>
+    </div>
+    <div class="result-body" id="resultBody"></div>
+
+    <!-- Other definitions (shown when homonym was resolved) -->
+    <div class="other-defs-section" id="otherDefsSection">
+      <div class="other-defs-label">See RWS for another definition of this word</div>
+      <div class="other-defs-row" id="otherDefsRow"></div>
+    </div>
+  </div>
+
+</main>
+
+<!-- Footer letterhead -->
+<footer class="site-footer">
+  <div class="footer-left">
+    <span class="footer-created">Created by</span>
+    <span class="footer-name">George Quarranttey</span>
+    <span class="footer-year">2026</span>
+  </div>
+  <div class="footer-right">Concept2Application<br>AI Tool</div>
+</footer>
+
+<script>
+  const input = document.getElementById('conceptInput');
+  const btn = document.getElementById('searchBtn');
+  const loadingArea = document.getElementById('loadingArea');
+  const errorCard = document.getElementById('errorCard');
+  const resultCard = document.getElementById('resultCard');
+  const themeErrorCard = document.getElementById('themeErrorCard');
+  const customThemeInput = document.getElementById('customThemeInput');
+
+  let selectedTheme = '';       // empty = AI picks
+  let isCustomTheme = false;
+  let homonymDefinitions = [];  // stores definitions when homonym detected
+  let chosenContext = null;     // the context string chosen by user
+
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') explain(); });
+  customThemeInput.addEventListener('keydown', e => { if (e.key === 'Enter') applyCustomTheme(); });
+
+  // Clear custom input when a preset is clicked
+  function selectTheme(el) {
+    document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    selectedTheme = el.dataset.theme;
+    isCustomTheme = false;
+    customThemeInput.value = '';
+    customThemeInput.classList.remove('active-custom');
+    themeErrorCard.classList.remove('visible');
+  }
+
+  function applyCustomTheme() {
+    const val = customThemeInput.value.trim();
+    if (!val) return;
+    // Deselect preset buttons
+    document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+    selectedTheme = val;
+    isCustomTheme = true;
+    customThemeInput.classList.add('active-custom');
+    themeErrorCard.classList.remove('visible');
+  }
+
+  function tryExample(text) {
+    input.value = text;
+    explain();
+  }
+
+  function setLoading(on) {
+    loadingArea.classList.toggle('visible', on);
+    btn.disabled = on;
+    btn.textContent = on ? 'Working...' : 'Explain It';
+  }
+
+  function hideAll() {
+    resultCard.classList.remove('visible');
+    errorCard.classList.remove('visible');
+    themeErrorCard.classList.remove('visible');
+    document.getElementById('inputErrorGibberish').classList.remove('visible');
+    document.getElementById('inputErrorOffensive').classList.remove('visible');
+    document.getElementById('inputErrorNiche').classList.remove('visible');
+    document.getElementById('homonymCard').classList.remove('visible');
+    document.getElementById('otherDefsSection').classList.remove('visible');
+  }
+
+  function buildSystemPrompt() {
+    const base = `You are an academic concept explainer tool. Your job is to take any concept a student is struggling with and return a structured real-world example that makes it immediately understandable.`;
+
+    const themeInstructions = selectedTheme
+      ? `The student has chosen a specific example theme: "${selectedTheme}".
+
+IMPORTANT — first evaluate whether this theme is workable:
+- If the theme is too vague, nonsensical, offensive, or genuinely impossible to connect to any academic concept in a meaningful way, set "theme_error" to a brief explanation of why (e.g. "This theme is too abstract to build a clear analogy around. Try something more concrete like a job, a place, or an activity."). In this case, still return the other fields as empty strings.
+- If the theme is unusual but workable (even if it requires creativity), commit fully to it and set "theme_error" to null.
+
+Also evaluate the quality of this theme as an analogy for the concept and set "quality" to one of: "bad", "okay", or "great". Set "quality_note" to one short sentence explaining the rating (e.g. "This theme maps naturally onto every part of the concept." or "The analogy works but requires some stretching."). If theme_error is set, quality should be "bad".
+
+If the theme is valid, frame the ENTIRE story within the theme: "${selectedTheme}".`
+      : `Choose the most universally relatable, vivid scenario that best illustrates the concept. Only use Penn State references if genuinely fitting. Set "theme_error" to null, "quality" to null, and "quality_note" to null.`;
+
+    return `${base}
+
+${themeInstructions}
+
+FIRST — before doing anything else, evaluate the student's input for validity:
+
+1. If the input is gibberish, random characters, a typo, or completely nonsensical (e.g. "asdfgh", "blargblarg", "xzqw"), set "input_error" to "gibberish".
+2. If the input is offensive, inappropriate, sexual, violent, or harmful in nature, set "input_error" to "offensive".
+3. If the input is an extremely niche proprietary term, internal company jargon, a made-up formula, or a hyper-specific technical term that you cannot reliably explain without risk of producing inaccurate information, set "input_error" to "niche" and set "niche_reason" to a brief phrase explaining why.
+4. If the input is a valid, recognizable academic concept, topic, subject, or word — even an unusual one — set "input_error" to null and proceed.
+
+HOMONYM DETECTION — apply this before generating any scenario, with the following strict rules:
+
+DISCIPLINE NEUTRALITY: This tool serves ALL academic disciplines equally — biology, chemistry, physics, economics, psychology, literature, political science, history, computer science, and every other field. You must NOT default to the most commonly used definition of a word, and you must NOT favor business, finance, or any other single discipline. Every recognized academic meaning of a word has equal standing.
+
+AMBIGUITY THRESHOLD: Set the bar LOW. If a word has a recognized, established definition in more than one academic field or domain — even if one meaning is dramatically more common or well-known than the other — treat it as a homonym and ask the student to clarify. It is always better to ask than to assume.
+
+CROSS-DISCIPLINE CHECK: Before deciding a word is unambiguous, actively scan across ALL of the following disciplines for alternate meanings: Biology, Chemistry, Physics, Mathematics, Economics/Finance, Psychology, Computer Science, Political Science, History, Literature/Linguistics, Law, Medicine/Anatomy, Environmental Science, Engineering, Philosophy, Sociology. If the word has a distinct, established meaning in ANY of these fields beyond the first one you think of, flag it as a homonym.
+
+EXAMPLES OF WORDS THAT MUST TRIGGER DISAMBIGUATION (non-exhaustive):
+- "liquidity" → Finance (ability to convert assets to cash) AND Chemistry (state of being liquid)
+- "solution" → Chemistry (mixture of solute and solvent) AND Mathematics (answer to an equation) AND general problem-solving
+- "base" → Chemistry (substance that accepts protons) AND Mathematics (number system foundation) AND Military (headquarters) AND Sports (position on field)
+- "current" → Physics/Electricity (flow of electric charge) AND Geography (flow of water or air) AND general meaning (happening now)
+- "power" → Physics (rate of energy transfer) AND Political Science (authority/influence) AND Mathematics (exponent)
+- "work" → Physics (force times displacement) AND Economics (labor) AND general meaning
+- "organic" → Chemistry (carbon-based compounds) AND Biology (living organisms) AND Food Science (farming without synthetic chemicals)
+- "pitch" → Music (frequency of sound) AND Sports (throwing motion or playing field) AND Business (sales presentation) AND Chemistry (viscous substance)
+- "medium" → Biology/Science (substance for growing cultures) AND Art (material used) AND Communication (channel of delivery) AND Paranormal (person claiming spirit communication)
+
+If the user has already specified a context (e.g. "liquidity in the context of chemistry"), skip disambiguation and go straight to the explanation.
+
+When is_homonym is true: populate "homonym_definitions" as an array of objects, each with:
+  - "label": a short name for this meaning (e.g. "Finance", "Chemistry")
+  - "field": the academic domain (e.g. "Economics / Finance", "Chemistry / Physical Science")
+  - "brief": one sentence describing this specific definition
+Set is_homonym to true, leave all scenario fields as empty strings, and do NOT generate a scenario.
+When is_homonym is false: set "homonym_definitions" to [] and proceed with the full explanation.
+
+LANGUAGE RULES — apply these to every response:
+- If the theme quality is "okay", the "connection" field must NOT claim the scenario illustrates the concept perfectly or is a perfect fit. It should acknowledge where the analogy holds and honestly note where it has limitations or requires some stretching.
+- If the concept has a closely related term that students commonly confuse it with (e.g. amortization vs. depreciation, revenue vs. profit, affect vs. effect, correlation vs. causation, speed vs. velocity, net vs. gross), you MUST proactively note the distinction in the "connection" field. Briefly clarify what makes this concept different from its common counterpart so the student walks away with an accurate, precise understanding.
+
+Respond ONLY with a valid JSON object — no markdown, no backticks, no extra text. Use this exact schema:
+{
+  "input_error": null,
+  "niche_reason": null,
+  "is_homonym": false,
+  "homonym_definitions": [],
+  "theme_error": null,
+  "quality": null,
+  "quality_note": null,
+  "scenario_title": "<catchy 5-8 word title describing the real-world scenario>",
+  "one_liner": "<One clear sentence defining the concept in plain, accessible language>",
+  "story": "<A vivid, specific real-world scenario (3-5 sentences) using the required theme. Use concrete names, numbers, relatable details. Avoid jargon.>",
+  "connection": "<2-3 sentences mapping each element of the story back to the academic concept and its formal definition. If quality is 'okay', honestly acknowledge where the analogy stretches or falls short rather than claiming it illustrates the concept perfectly.>",
+  "takeaway": "<One memorable, exam-ready sentence distilling the concept to its essence>"
+}`;
+  }
+
+  async function explain(conceptOverride, contextOverride) {
+    const concept = conceptOverride || input.value.trim();
+    if (!concept) { input.focus(); return; }
+
+    // Reset homonym state on fresh searches (not context-overridden calls)
+    if (!contextOverride) {
+      chosenContext = null;
+      homonymDefinitions = [];
+    }
+
+    // If context specified manually inline (e.g. "bat in the context of sports")
+    // pass it straight through — AI will see it and not trigger homonym flow
+    const fullConcept = contextOverride
+      ? `${concept} in the context of ${contextOverride}`
+      : concept;
+
+    hideAll();
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1400,
+          system: buildSystemPrompt(),
+          messages: [{ role: "user", content: `Explain the concept: "${fullConcept}"` }]
+        })
+      });
+
+      const data = await response.json();
+      const text = data.content.map(b => b.text || '').join('');
+      const clean = text.replace(/```json|```/g, '').trim();
+      const parsed = JSON.parse(clean);
+
+      // Handle input errors first
+      if (parsed.input_error === 'gibberish') {
+        document.getElementById('inputErrorGibberish').classList.add('visible');
+        setLoading(false);
+        return;
+      }
+      if (parsed.input_error === 'offensive') {
+        document.getElementById('inputErrorOffensive').classList.add('visible');
+        setLoading(false);
+        return;
+      }
+      if (parsed.input_error === 'niche') {
+        document.getElementById('inputErrorNicheReason').textContent = parsed.niche_reason || 'an extremely niche or proprietary term';
+        document.getElementById('inputErrorNiche').classList.add('visible');
+        setLoading(false);
+        return;
+      }
+
+      // Handle homonym — show disambiguation card
+      if (parsed.is_homonym && parsed.homonym_definitions && parsed.homonym_definitions.length > 1) {
+        homonymDefinitions = parsed.homonym_definitions;
+        showHomonymCard(concept, parsed.homonym_definitions);
+        setLoading(false);
+        return;
+      }
+
+      // Handle theme error
+      if (parsed.theme_error) {
+        document.getElementById('themeErrorMsg').textContent = parsed.theme_error;
+        themeErrorCard.classList.add('visible');
+        setLoading(false);
+        return;
+      }
+
+      render(concept, parsed, contextOverride || null);
+    } catch (err) {
+      console.error(err);
+      errorCard.classList.add('visible');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function showHomonymCard(word, definitions) {
+    document.getElementById('homonymWord').textContent = word.toUpperCase();
+    const container = document.getElementById('homonymOptions');
+    container.innerHTML = definitions.map((def, i) => `
+      <button class="homonym-option-btn" onclick="explainWithContext('${esc(word)}', '${esc(def.label)}', ${i})">
+        <div class="homonym-option-num">${i + 1}</div>
+        <div class="homonym-option-content">
+          <div class="homonym-option-label">${esc(def.label)} <span style="opacity:0.45;font-weight:400;text-transform:none;letter-spacing:0">— ${esc(def.field)}</span></div>
+          <div class="homonym-option-desc">${esc(def.brief)}</div>
+        </div>
+      </button>
+    `).join('');
+    document.getElementById('homonymCard').classList.add('visible');
+    document.getElementById('homonymCard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function explainWithContext(word, context, chosenIndex) {
+    chosenContext = { word, context, chosenIndex };
+    explain(word, context);
+  }
+
+  function render(concept, d, usedContext) {
+    document.getElementById('resultConceptName').textContent = concept.toUpperCase();
+    document.getElementById('resultScenarioTitle').textContent = d.scenario_title || '';
+
+    // Theme badge
+    const badge = document.getElementById('resultThemeBadge');
+    if (selectedTheme) {
+      badge.textContent = selectedTheme + ' theme';
+      badge.style.display = 'inline-block';
+    } else {
+      badge.style.display = 'none';
+    }
+
+    // Quality banner — only show when a specific theme was chosen (not AI picks)
+    const banner = document.getElementById('qualityBanner');
+    if (selectedTheme && d.quality) {
+      const pill = document.getElementById('qualityPill');
+      const word = document.getElementById('qualityWord');
+      const note = document.getElementById('qualityNote');
+
+      pill.className = 'quality-pill ' + d.quality;
+      word.textContent = d.quality.charAt(0).toUpperCase() + d.quality.slice(1) + ' Example';
+      note.textContent = d.quality_note || '';
+      banner.classList.add('visible');
+    } else {
+      banner.classList.remove('visible');
+    }
+
+    document.getElementById('resultBody').innerHTML = `
+      <div class="r-section">
+        <div class="r-label">Definition</div>
+        <div class="r-text">${esc(d.one_liner)}</div>
+      </div>
+      <div class="r-section">
+        <div class="r-label">Real-World Scenario</div>
+        <div class="story-block">${esc(d.story)}</div>
+      </div>
+      <div class="r-section">
+        <div class="r-label">How It Connects</div>
+        <div class="r-text">${esc(d.connection)}</div>
+      </div>
+      <div class="r-section">
+        <div class="r-label">Key Takeaway</div>
+        <div class="takeaway-block">
+          <div class="takeaway-bar"></div>
+          <div class="takeaway-text">${esc(d.takeaway)}</div>
+        </div>
+      </div>
+    `;
+
+    // Show other definitions if this came from a homonym choice
+    const otherSection = document.getElementById('otherDefsSection');
+    const otherRow = document.getElementById('otherDefsRow');
+    if (chosenContext && homonymDefinitions.length > 1) {
+      const others = homonymDefinitions.filter((_, i) => i !== chosenContext.chosenIndex);
+      otherRow.innerHTML = others.map(def => `
+        <button class="other-def-btn" onclick="explainWithContext('${esc(chosenContext.word)}', '${esc(def.label)}', ${homonymDefinitions.indexOf(def)})">
+          ${esc(def.label)} (${esc(def.field)})
+        </button>
+      `).join('');
+      otherSection.classList.add('visible');
+    } else {
+      otherSection.classList.remove('visible');
+    }
+
+    resultCard.classList.add('visible');
+    resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function esc(str) {
+    return (str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+</script>
+
+</body>
+</html>
